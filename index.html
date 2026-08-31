@@ -1,1 +1,1219 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+  <title>Georgia SA-MP Launcher</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #08090c;
+      color: white;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(8,9,12,.95);
+      border-bottom: 1px solid #24252c;
+      backdrop-filter: blur(15px);
+    }
+
+    .nav {
+      max-width: 1200px;
+      margin: auto;
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 21px;
+      font-weight: 900;
+      color: #ff8a3d;
+    }
+
+    .logo span {
+      color: white;
+    }
+
+    nav {
+      display: flex;
+      gap: 10px;
+    }
+
+    nav button {
+      background: transparent;
+      color: #aaa;
+      border: 0;
+      padding: 10px 14px;
+      cursor: pointer;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+
+    nav button:hover,
+    nav button.active {
+      background: #1a1b21;
+      color: white;
+    }
+
+    .hero {
+      max-width: 1200px;
+      margin: auto;
+      padding: 75px 20px 45px;
+    }
+
+    .hero h1 {
+      font-size: clamp(38px, 7vw, 72px);
+      line-height: 1;
+      max-width: 850px;
+    }
+
+    .hero h1 span {
+      color: #ff8a3d;
+    }
+
+    .hero p {
+      color: #999ba7;
+      font-size: 18px;
+      margin-top: 20px;
+      max-width: 650px;
+      line-height: 1.6;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: 0;
+      padding: 14px 20px;
+      border-radius: 12px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .primary {
+      background: #ff8a3d;
+      color: #111;
+    }
+
+    .secondary {
+      background: #202128;
+      color: white;
+    }
+
+    .section {
+      max-width: 1200px;
+      margin: auto;
+      padding: 25px 20px 60px;
+    }
+
+    .section-title {
+      font-size: 28px;
+      margin-bottom: 18px;
+    }
+
+    .search {
+      width: 100%;
+      padding: 16px;
+      background: #121319;
+      color: white;
+      border: 1px solid #292a32;
+      border-radius: 13px;
+      outline: none;
+      margin-bottom: 20px;
+    }
+
+    .servers {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+      gap: 15px;
+    }
+
+    .server {
+      background: #14151b;
+      border: 1px solid #25262e;
+      border-radius: 18px;
+      padding: 20px;
+      transition: .2s;
+    }
+
+    .server:hover {
+      transform: translateY(-3px);
+      border-color: #ff8a3d;
+    }
+
+    .server-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .server h3 {
+      font-size: 19px;
+    }
+
+    .star {
+      color: #777;
+      font-size: 21px;
+      cursor: pointer;
+    }
+
+    .featured {
+      color: #ff8a3d;
+    }
+
+    .address {
+      color: #858793;
+      margin-top: 8px;
+      font-size: 13px;
+    }
+
+    .online {
+      color: #62dc75;
+      font-size: 13px;
+      margin-top: 13px;
+    }
+
+    .server button {
+      width: 100%;
+      margin-top: 15px;
+    }
+
+    .empty {
+      background: #121319;
+      padding: 30px;
+      border-radius: 15px;
+      color: #888;
+      text-align: center;
+    }
+
+    .panel {
+      display: none;
+      max-width: 1200px;
+      margin: auto;
+      padding: 40px 20px 70px;
+    }
+
+    .panel-box {
+      background: #14151b;
+      border: 1px solid #272831;
+      padding: 22px;
+      border-radius: 18px;
+      margin-bottom: 18px;
+    }
+
+    .panel-box h2 {
+      margin-bottom: 16px;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 13px;
+      background: #0e0f13;
+      color: white;
+      border: 1px solid #30313a;
+      border-radius: 10px;
+      margin: 7px 0 12px;
+      outline: none;
+    }
+
+    .admin-server {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      border-bottom: 1px solid #292a31;
+      padding: 14px 0;
+    }
+
+    .admin-actions {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .small {
+      padding: 9px 12px;
+      border-radius: 9px;
+      border: 0;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    .red {
+      background: #b83838;
+      color: white;
+    }
+
+    .green {
+      background: #246d39;
+      color: white;
+    }
+
+    .footer {
+      border-top: 1px solid #24252c;
+      text-align: center;
+      padding: 30px;
+      color: #777;
+    }
+
+    #message {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      background: #202128;
+      padding: 15px 18px;
+      border-radius: 12px;
+      display: none;
+      z-index: 100;
+    }
+
+    @media(max-width:700px) {
+      nav button {
+        padding: 8px;
+        font-size: 12px;
+      }
+
+      .hero {
+        padding-top: 50px;
+      }
+
+      .admin-server {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="nav">
+
+    <div class="logo">
+      GEORGIA <span>SA-MP</span>
+    </div>
+
+    <nav>
+      <button class="active" onclick="showHome()">მთავარი</button>
+      <button onclick="showServers()">სერვერები</button>
+      <button onclick="showAdmin()">Admin</button>
+    </nav>
+
+  </div>
+</header>
+
+<main id="home">
+
+  <section class="hero">
+
+    <h1>
+      შენი SA-MP სამყარო
+      <span>ერთ ადგილას.</span>
+    </h1>
+
+    <p>
+      იპოვე ქართული SA-MP სერვერები, ნახე მათი სტატუსი
+      და სწრაფად გადადი სასურველ სერვერზე.
+    </p>
+
+    <div class="buttons">
+      <button class="btn primary" onclick="showServers()">
+        🎮 სერვერების ნახვა
+      </button>
+
+      <button class="btn secondary" onclick="showAdmin()">
+        🔐 Admin Panel
+      </button>
+    </div>
+
+  </section>
+
+  <section class="section">
+
+    <h2 class="section-title">🔥 პოპულარული სერვერები</h2>
+
+    <div id="featuredServers" class="servers">
+      <div class="empty">იტვირთება...</div>
+    </div>
+
+  </section>
+
+</main>
+
+
+<section id="serversPage" class="section" style="display:none">
+
+  <h2 class="section-title">🎮 ყველა სერვერი</h2>
+
+  <input
+    id="search"
+    class="search"
+    placeholder="🔎 მოძებნე სერვერი ან IP..."
+    oninput="filterServers()"
+  >
+
+  <div id="serverList" class="servers">
+    <div class="empty">იტვირთება...</div>
+  </div>
+
+</section>
+
+
+<section id="adminPage" class="panel">
+
+  <div id="loginBox" class="panel-box">
+
+    <h2>🔐 Admin Login</h2>
+
+    <p style="color:#888;margin-bottom:15px">
+      Admin Panel-ზე შესასვლელად გამოიყენე შენი Supabase ანგარიში.
+    </p>
+
+    <input
+      id="adminEmail"
+      type="email"
+      placeholder="Email"
+    >
+
+    <input
+      id="adminPassword"
+      type="password"
+      placeholder="Password"
+    >
+
+    <button class="btn primary" onclick="adminLogin()">
+      შესვლა
+    </button>
+
+  </div>
+
+
+  <div id="adminPanel" style="display:none">
+
+    <div class="panel-box">
+
+      <h2>🛠️ Georgia Launcher Admin</h2>
+
+      <p style="color:#888;margin-bottom:15px">
+        სერვერების მართვის პანელი
+      </p>
+
+      <button class="btn secondary" onclick="adminLogout()">
+        გასვლა
+      </button>
+
+    </div>
+
+
+    <div class="panel-box">
+
+      <h2>➕ სერვერის დამატება</h2>
+
+      <input
+        id="newName"
+        placeholder="სერვერის სახელი"
+      >
+
+      <input
+        id="newAddress"
+        placeholder="IP:PORT"
+      >
+
+      <textarea
+        id="newDescription"
+        placeholder="სერვერის აღწერა"
+        rows="4"
+      ></textarea>
+
+      <label style="color:#aaa">
+        <input
+          id="newFeatured"
+          type="checkbox"
+          style="width:auto"
+        >
+        ⭐ პოპულარულში გამოჩენა
+      </label>
+
+      <br><br>
+
+      <button class="btn primary" onclick="addServer()">
+        სერვერის დამატება
+      </button>
+
+    </div>
+
+
+    <div class="panel-box">
+
+      <h2>📊 სერვერების მართვა</h2>
+
+      <div id="adminServers">
+        იტვირთება...
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<div id="message"></div>
+
+
+<footer class="footer">
+  © 2026 Georgia SA-MP Launcher
+</footer>
+
+
+<script>
+
+/* =====================================
+   SUPABASE CONFIG
+===================================== */
+
+const SUPABASE_URL =
+  "https://csllrivpflubamvtwplx.supabase.co";
+
+const SUPABASE_PUBLISHABLE_KEY =
+  "sb_publishable_FOX-HoqoqiuJKCkjZ9olTw_oYQKKRf6";
+
+const db = supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_PUBLISHABLE_KEY
+);
+
+
+/* =====================================
+   GLOBAL DATA
+===================================== */
+
+let allServers = [];
+
+let favorites =
+  JSON.parse(localStorage.getItem("sampFavorites") || "[]");
+
+
+/* =====================================
+   MESSAGE
+===================================== */
+
+function message(text) {
+
+  const box = document.getElementById("message");
+
+  box.textContent = text;
+
+  box.style.display = "block";
+
+  setTimeout(() => {
+    box.style.display = "none";
+  }, 3000);
+}
+
+
+/* =====================================
+   NAVIGATION
+===================================== */
+
+function hideAll() {
+
+  document.getElementById("home").style.display = "none";
+
+  document.getElementById("serversPage").style.display = "none";
+
+  document.getElementById("adminPage").style.display = "none";
+}
+
+
+function showHome() {
+
+  hideAll();
+
+  document.getElementById("home").style.display = "block";
+
+  loadServers();
+}
+
+
+function showServers() {
+
+  hideAll();
+
+  document.getElementById("serversPage").style.display = "block";
+
+  loadServers();
+}
+
+
+async function showAdmin() {
+
+  hideAll();
+
+  document.getElementById("adminPage").style.display = "block";
+
+  const {
+    data: {
+      session
+    }
+  } = await db.auth.getSession();
+
+  if (session) {
+
+    await checkAdmin();
+
+  } else {
+
+    document.getElementById("loginBox").style.display = "block";
+
+    document.getElementById("adminPanel").style.display = "none";
+  }
+}
+
+
+/* =====================================
+   LOAD SERVERS
+===================================== */
+
+async function loadServers() {
+
+  const {
+    data,
+    error
+  } = await db
+    .from("servers")
+    .select("*")
+    .eq("is_active", true)
+    .order("sort_order")
+    .order("created_at", {
+      ascending: false
+    });
+
+
+  if (error) {
+
+    console.error(error);
+
+    document.getElementById("serverList").innerHTML =
+      '<div class="empty">სერვერების ჩატვირთვა ვერ მოხერხდა.</div>';
+
+    document.getElementById("featuredServers").innerHTML =
+      '<div class="empty">სერვერების ჩატვირთვა ვერ მოხერხდა.</div>';
+
+    return;
+  }
+
+
+  allServers = data || [];
+
+
+  renderServers();
+
+  renderFeatured();
+}
+
+
+/* =====================================
+   RENDER ALL
+===================================== */
+
+function renderServers() {
+
+  const box =
+    document.getElementById("serverList");
+
+
+  if (!allServers.length) {
+
+    box.innerHTML =
+      '<div class="empty">სერვერები ჯერ არ არის დამატებული.</div>';
+
+    return;
+  }
+
+
+  box.innerHTML =
+    allServers.map(serverCard).join("");
+}
+
+
+/* =====================================
+   FEATURED
+===================================== */
+
+function renderFeatured() {
+
+  const box =
+    document.getElementById("featuredServers");
+
+
+  const featured =
+    allServers.filter(s => s.is_featured);
+
+
+  if (!featured.length) {
+
+    box.innerHTML =
+      '<div class="empty">პოპულარული სერვერები ჯერ არ არის.</div>';
+
+    return;
+  }
+
+
+  box.innerHTML =
+    featured.slice(0, 6).map(serverCard).join("");
+}
+
+
+/* =====================================
+   SERVER CARD
+===================================== */
+
+function serverCard(server) {
+
+  const isFav =
+    favorites.includes(server.id);
+
+
+  return `
+
+    <div class="server">
+
+      <div class="server-top">
+
+        <div>
+
+          <h3>
+            ${escapeHTML(server.name)}
+          </h3>
+
+          <div class="address">
+            ${escapeHTML(server.address)}
+          </div>
+
+        </div>
+
+        <div
+          class="star ${isFav ? "featured" : ""}"
+          onclick="toggleFavorite('${server.id}')"
+        >
+          ${isFav ? "★" : "☆"}
+        </div>
+
+      </div>
+
+
+      <div class="online">
+        🟢 ონლაინ
+      </div>
+
+
+      <p style="
+        color:#888;
+        margin-top:10px;
+        line-height:1.5;
+        font-size:14px;
+      ">
+        ${escapeHTML(server.description || "SA-MP სერვერი")}
+      </p>
+
+
+      <button
+        class="btn primary"
+        onclick="connectServer('${escapeHTML(server.address)}')"
+      >
+        ▶️ სერვერზე შესვლა
+      </button>
+
+    </div>
+
+  `;
+}
+
+
+/* =====================================
+   SEARCH
+===================================== */
+
+function filterServers() {
+
+  const query =
+    document
+      .getElementById("search")
+      .value
+      .toLowerCase();
+
+
+  const filtered =
+    allServers.filter(server =>
+      server.name.toLowerCase().includes(query) ||
+      server.address.toLowerCase().includes(query)
+    );
+
+
+  const box =
+    document.getElementById("serverList");
+
+
+  if (!filtered.length) {
+
+    box.innerHTML =
+      '<div class="empty">სერვერი ვერ მოიძებნა.</div>';
+
+    return;
+  }
+
+
+  box.innerHTML =
+    filtered.map(serverCard).join("");
+}
+
+
+/* =====================================
+   FAVORITES
+===================================== */
+
+function toggleFavorite(id) {
+
+  if (favorites.includes(id)) {
+
+    favorites =
+      favorites.filter(x => x !== id);
+
+  } else {
+
+    favorites.push(id);
+  }
+
+
+  localStorage.setItem(
+    "sampFavorites",
+    JSON.stringify(favorites)
+  );
+
+
+  renderServers();
+
+  renderFeatured();
+}
+
+
+/* =====================================
+   CONNECT
+===================================== */
+
+function connectServer(address) {
+
+  message(
+    "სერვერი: " + address
+  );
+
+  /*
+    შემდეგ ეტაპზე აქ დავამატებთ
+    Android SA-MP Launcher-ის
+    რეალურ Connect ინტეგრაციას.
+  */
+
+}
+
+
+/* =====================================
+   ADMIN LOGIN
+===================================== */
+
+async function adminLogin() {
+
+  const email =
+    document.getElementById("adminEmail").value.trim();
+
+  const password =
+    document.getElementById("adminPassword").value;
+
+
+  if (!email || !password) {
+
+    message("შეავსე Email და Password.");
+
+    return;
+  }
+
+
+  const {
+    error
+  } = await db.auth.signInWithPassword({
+    email,
+    password
+  });
+
+
+  if (error) {
+
+    message("შესვლა ვერ მოხერხდა: " + error.message);
+
+    return;
+  }
+
+
+  await checkAdmin();
+}
+
+
+/* =====================================
+   CHECK ADMIN
+===================================== */
+
+async function checkAdmin() {
+
+  const {
+    data: {
+      user
+    }
+  } = await db.auth.getUser();
+
+
+  if (!user) {
+
+    document.getElementById("loginBox").style.display = "block";
+
+    document.getElementById("adminPanel").style.display = "none";
+
+    return;
+  }
+
+
+  const {
+    data: profile,
+    error
+  } = await db
+    .from("profiles")
+    .select("is_admin,email")
+    .eq("id", user.id)
+    .single();
+
+
+  if (
+    error ||
+    !profile ||
+    profile.is_admin !== true
+  ) {
+
+    await db.auth.signOut();
+
+    message(
+      "ამ ანგარიშს Admin წვდომა არ აქვს."
+    );
+
+    return;
+  }
+
+
+  document.getElementById("loginBox").style.display = "none";
+
+  document.getElementById("adminPanel").style.display = "block";
+
+
+  loadAdminServers();
+}
+
+
+/* =====================================
+   ADMIN LOGOUT
+===================================== */
+
+async function adminLogout() {
+
+  await db.auth.signOut();
+
+  message("გამოხვედი Admin Panel-იდან.");
+
+  showHome();
+}
+
+
+/* =====================================
+   ADD SERVER
+===================================== */
+
+async function addServer() {
+
+  const name =
+    document.getElementById("newName").value.trim();
+
+  const address =
+    document.getElementById("newAddress").value.trim();
+
+  const description =
+    document.getElementById("newDescription").value.trim();
+
+  const featured =
+    document.getElementById("newFeatured").checked;
+
+
+  if (!name || !address) {
+
+    message("სახელი და IP:PORT აუცილებელია.");
+
+    return;
+  }
+
+
+  const {
+    error
+  } = await db
+    .from("servers")
+    .insert({
+      name: name,
+      address: address,
+      description: description,
+      is_featured: featured,
+      is_active: true
+    });
+
+
+  if (error) {
+
+    message(
+      "შეცდომა: " + error.message
+    );
+
+    return;
+  }
+
+
+  document.getElementById("newName").value = "";
+
+  document.getElementById("newAddress").value = "";
+
+  document.getElementById("newDescription").value = "";
+
+  document.getElementById("newFeatured").checked = false;
+
+
+  message("სერვერი დაემატა ✅");
+
+  loadAdminServers();
+
+  loadServers();
+}
+
+
+/* =====================================
+   ADMIN SERVERS
+===================================== */
+
+async function loadAdminServers() {
+
+  const box =
+    document.getElementById("adminServers");
+
+
+  const {
+    data,
+    error
+  } = await db
+    .from("servers")
+    .select("*")
+    .order("created_at", {
+      ascending: false
+    });
+
+
+  if (error) {
+
+    box.innerHTML =
+      "შეცდომა: " + error.message;
+
+    return;
+  }
+
+
+  if (!data.length) {
+
+    box.innerHTML =
+      '<div class="empty">სერვერები არ არის.</div>';
+
+    return;
+  }
+
+
+  box.innerHTML =
+    data.map(server => `
+
+      <div class="admin-server">
+
+        <div>
+
+          <b>
+            ${escapeHTML(server.name)}
+          </b>
+
+          <div style="color:#888;margin-top:5px">
+            ${escapeHTML(server.address)}
+          </div>
+
+          <div style="
+            color:${server.is_active ? "#62dc75" : "#d85b5b"};
+            margin-top:5px;
+            font-size:13px;
+          ">
+            ${server.is_active ? "● აქტიური" : "● გამორთული"}
+          </div>
+
+        </div>
+
+
+        <div class="admin-actions">
+
+          <button
+            class="small green"
+            onclick="
+              toggleServer(
+                '${server.id}',
+                ${!server.is_active}
+              )
+            "
+          >
+            ${server.is_active ? "გამორთვა" : "ჩართვა"}
+          </button>
+
+
+          <button
+            class="small red"
+            onclick="
+              deleteServer('${server.id}')
+            "
+          >
+            წაშლა
+          </button>
+
+        </div>
+
+      </div>
+
+    `).join("");
+}
+
+
+/* =====================================
+   TOGGLE
+===================================== */
+
+async function toggleServer(id, active) {
+
+  const {
+    error
+  } = await db
+    .from("servers")
+    .update({
+      is_active: active,
+      updated_at: new Date().toISOString()
+    })
+    .eq("id", id);
+
+
+  if (error) {
+
+    message(error.message);
+
+    return;
+  }
+
+
+  message(
+    active
+      ? "სერვერი ჩაირთო ✅"
+      : "სერვერი გამოირთო."
+  );
+
+
+  loadAdminServers();
+
+  loadServers();
+}
+
+
+/* =====================================
+   DELETE
+===================================== */
+
+async function deleteServer(id) {
+
+  if (
+    !confirm(
+      "ნამდვილად გინდა ამ სერვერის წაშლა?"
+    )
+  ) {
+    return;
+  }
+
+
+  const {
+    error
+  } = await db
+    .from("servers")
+    .delete()
+    .eq("id", id);
+
+
+  if (error) {
+
+    message(error.message);
+
+    return;
+  }
+
+
+  message("სერვერი წაიშალა.");
+
+  loadAdminServers();
+
+  loadServers();
+}
+
+
+/* =====================================
+   ESCAPE HTML
+===================================== */
+
+function escapeHTML(value) {
+
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+
+/* =====================================
+   START
+===================================== */
+
+loadServers();
+
+</script>
+
+</body>
+      </html>
