@@ -285,6 +285,7 @@
       border-radius: 12px;
       display: none;
       z-index: 100;
+      max-width: 90%;
     }
 
     @media(max-width:700px) {
@@ -315,13 +316,22 @@
     </div>
 
     <nav>
-      <button class="active" onclick="showHome()">მთავარი</button>
-      <button onclick="showServers()">სერვერები</button>
-      <button onclick="showAdmin()">Admin</button>
+      <button id="homeBtn" class="active" onclick="showHome()">
+        მთავარი
+      </button>
+
+      <button id="serversBtn" onclick="showServers()">
+        სერვერები
+      </button>
+
+      <button id="adminBtn" onclick="showAdmin()">
+        Admin
+      </button>
     </nav>
 
   </div>
 </header>
+
 
 <main id="home">
 
@@ -338,6 +348,7 @@
     </p>
 
     <div class="buttons">
+
       <button class="btn primary" onclick="showServers()">
         🎮 სერვერების ნახვა
       </button>
@@ -345,16 +356,22 @@
       <button class="btn secondary" onclick="showAdmin()">
         🔐 Admin Panel
       </button>
+
     </div>
 
   </section>
 
+
   <section class="section">
 
-    <h2 class="section-title">🔥 პოპულარული სერვერები</h2>
+    <h2 class="section-title">
+      🔥 პოპულარული სერვერები
+    </h2>
 
     <div id="featuredServers" class="servers">
-      <div class="empty">იტვირთება...</div>
+      <div class="empty">
+        იტვირთება...
+      </div>
     </div>
 
   </section>
@@ -364,7 +381,9 @@
 
 <section id="serversPage" class="section" style="display:none">
 
-  <h2 class="section-title">🎮 ყველა სერვერი</h2>
+  <h2 class="section-title">
+    🎮 ყველა სერვერი
+  </h2>
 
   <input
     id="search"
@@ -374,7 +393,11 @@
   >
 
   <div id="serverList" class="servers">
-    <div class="empty">იტვირთება...</div>
+
+    <div class="empty">
+      იტვირთება...
+    </div>
+
   </div>
 
 </section>
@@ -384,7 +407,9 @@
 
   <div id="loginBox" class="panel-box">
 
-    <h2>🔐 Admin Login</h2>
+    <h2>
+      🔐 Admin Login
+    </h2>
 
     <p style="color:#888;margin-bottom:15px">
       Admin Panel-ზე შესასვლელად გამოიყენე შენი Supabase ანგარიში.
@@ -394,12 +419,14 @@
       id="adminEmail"
       type="email"
       placeholder="Email"
+      autocomplete="email"
     >
 
     <input
       id="adminPassword"
       type="password"
       placeholder="Password"
+      autocomplete="current-password"
     >
 
     <button class="btn primary" onclick="adminLogin()">
@@ -413,7 +440,9 @@
 
     <div class="panel-box">
 
-      <h2>🛠️ Georgia Launcher Admin</h2>
+      <h2>
+        🛠️ Georgia Launcher Admin
+      </h2>
 
       <p style="color:#888;margin-bottom:15px">
         სერვერების მართვის პანელი
@@ -428,7 +457,9 @@
 
     <div class="panel-box">
 
-      <h2>➕ სერვერის დამატება</h2>
+      <h2>
+        ➕ სერვერის დამატება
+      </h2>
 
       <input
         id="newName"
@@ -447,12 +478,15 @@
       ></textarea>
 
       <label style="color:#aaa">
+
         <input
           id="newFeatured"
           type="checkbox"
           style="width:auto"
         >
+
         ⭐ პოპულარულში გამოჩენა
+
       </label>
 
       <br><br>
@@ -466,7 +500,9 @@
 
     <div class="panel-box">
 
-      <h2>📊 სერვერების მართვა</h2>
+      <h2>
+        📊 სერვერების მართვა
+      </h2>
 
       <div id="adminServers">
         იტვირთება...
@@ -490,7 +526,7 @@
 <script>
 
 /* =====================================
-   SUPABASE CONFIG
+   SUPABASE
 ===================================== */
 
 const SUPABASE_URL =
@@ -506,13 +542,27 @@ const db = supabase.createClient(
 
 
 /* =====================================
-   GLOBAL DATA
+   ADMIN USER
+===================================== */
+
+const ADMIN_USER_ID =
+  "fada164f-64fe-44e7-9f16-65f46f8c1497";
+
+
+const ADMIN_EMAIL =
+  "manuchar.fartenadze@gmail.com";
+
+
+/* =====================================
+   GLOBAL
 ===================================== */
 
 let allServers = [];
 
 let favorites =
-  JSON.parse(localStorage.getItem("sampFavorites") || "[]");
+  JSON.parse(
+    localStorage.getItem("sampFavorites") || "[]"
+  );
 
 
 /* =====================================
@@ -521,15 +571,18 @@ let favorites =
 
 function message(text) {
 
-  const box = document.getElementById("message");
+  const box =
+    document.getElementById("message");
 
   box.textContent = text;
 
   box.style.display = "block";
 
   setTimeout(() => {
+
     box.style.display = "none";
-  }, 3000);
+
+  }, 4000);
 }
 
 
@@ -537,13 +590,33 @@ function message(text) {
    NAVIGATION
 ===================================== */
 
+function setActive(buttonId) {
+
+  document
+    .querySelectorAll("nav button")
+    .forEach(button => {
+      button.classList.remove("active");
+    });
+
+  const button =
+    document.getElementById(buttonId);
+
+  if (button) {
+    button.classList.add("active");
+  }
+}
+
+
 function hideAll() {
 
-  document.getElementById("home").style.display = "none";
+  document.getElementById("home").style.display =
+    "none";
 
-  document.getElementById("serversPage").style.display = "none";
+  document.getElementById("serversPage").style.display =
+    "none";
 
-  document.getElementById("adminPage").style.display = "none";
+  document.getElementById("adminPage").style.display =
+    "none";
 }
 
 
@@ -551,7 +624,10 @@ function showHome() {
 
   hideAll();
 
-  document.getElementById("home").style.display = "block";
+  document.getElementById("home").style.display =
+    "block";
+
+  setActive("homeBtn");
 
   loadServers();
 }
@@ -561,7 +637,10 @@ function showServers() {
 
   hideAll();
 
-  document.getElementById("serversPage").style.display = "block";
+  document.getElementById("serversPage").style.display =
+    "block";
+
+  setActive("serversBtn");
 
   loadServers();
 }
@@ -571,24 +650,44 @@ async function showAdmin() {
 
   hideAll();
 
-  document.getElementById("adminPage").style.display = "block";
+  document.getElementById("adminPage").style.display =
+    "block";
+
+  setActive("adminBtn");
 
   const {
-    data: {
-      session
-    }
+    data,
+    error
   } = await db.auth.getSession();
 
-  if (session) {
+  if (error) {
+
+    console.error(error);
+
+    showLogin();
+
+    return;
+  }
+
+  if (data.session) {
 
     await checkAdmin();
 
   } else {
 
-    document.getElementById("loginBox").style.display = "block";
+    showLogin();
 
-    document.getElementById("adminPanel").style.display = "none";
   }
+}
+
+
+function showLogin() {
+
+  document.getElementById("loginBox").style.display =
+    "block";
+
+  document.getElementById("adminPanel").style.display =
+    "none";
 }
 
 
@@ -598,6 +697,13 @@ async function showAdmin() {
 
 async function loadServers() {
 
+  const serverList =
+    document.getElementById("serverList");
+
+  const featuredServers =
+    document.getElementById("featuredServers");
+
+
   const {
     data,
     error
@@ -605,7 +711,9 @@ async function loadServers() {
     .from("servers")
     .select("*")
     .eq("is_active", true)
-    .order("sort_order")
+    .order("sort_order", {
+      ascending: true
+    })
     .order("created_at", {
       ascending: false
     });
@@ -613,19 +721,30 @@ async function loadServers() {
 
   if (error) {
 
-    console.error(error);
+    console.error(
+      "SERVER LOAD ERROR:",
+      error
+    );
 
-    document.getElementById("serverList").innerHTML =
-      '<div class="empty">სერვერების ჩატვირთვა ვერ მოხერხდა.</div>';
+    const errorText =
+      escapeHTML(error.message || "Unknown error");
 
-    document.getElementById("featuredServers").innerHTML =
-      '<div class="empty">სერვერების ჩატვირთვა ვერ მოხერხდა.</div>';
+    serverList.innerHTML =
+      '<div class="empty">სერვერების ჩატვირთვა ვერ მოხერხდა.<br><br>' +
+      errorText +
+      '</div>';
+
+    featuredServers.innerHTML =
+      '<div class="empty">სერვერების ჩატვირთვა ვერ მოხერხდა.<br><br>' +
+      errorText +
+      '</div>';
 
     return;
   }
 
 
-  allServers = data || [];
+  allServers =
+    data || [];
 
 
   renderServers();
@@ -635,7 +754,7 @@ async function loadServers() {
 
 
 /* =====================================
-   RENDER ALL
+   RENDER SERVERS
 ===================================== */
 
 function renderServers() {
@@ -647,14 +766,18 @@ function renderServers() {
   if (!allServers.length) {
 
     box.innerHTML =
-      '<div class="empty">სერვერები ჯერ არ არის დამატებული.</div>';
+      '<div class="empty">' +
+      'სერვერები ჯერ არ არის დამატებული.' +
+      '</div>';
 
     return;
   }
 
 
   box.innerHTML =
-    allServers.map(serverCard).join("");
+    allServers
+      .map(serverCard)
+      .join("");
 }
 
 
@@ -665,24 +788,33 @@ function renderServers() {
 function renderFeatured() {
 
   const box =
-    document.getElementById("featuredServers");
+    document.getElementById(
+      "featuredServers"
+    );
 
 
   const featured =
-    allServers.filter(s => s.is_featured);
+    allServers.filter(
+      server => server.is_featured
+    );
 
 
   if (!featured.length) {
 
     box.innerHTML =
-      '<div class="empty">პოპულარული სერვერები ჯერ არ არის.</div>';
+      '<div class="empty">' +
+      'პოპულარული სერვერები ჯერ არ არის.' +
+      '</div>';
 
     return;
   }
 
 
   box.innerHTML =
-    featured.slice(0, 6).map(serverCard).join("");
+    featured
+      .slice(0, 6)
+      .map(serverCard)
+      .join("");
 }
 
 
@@ -735,13 +867,16 @@ function serverCard(server) {
         line-height:1.5;
         font-size:14px;
       ">
-        ${escapeHTML(server.description || "SA-MP სერვერი")}
+        ${escapeHTML(
+          server.description ||
+          "SA-MP სერვერი"
+        )}
       </p>
 
 
       <button
         class="btn primary"
-        onclick="connectServer('${escapeHTML(server.address)}')"
+        onclick="connectServer('${escapeJS(server.address)}')"
       >
         ▶️ სერვერზე შესვლა
       </button>
@@ -762,13 +897,23 @@ function filterServers() {
     document
       .getElementById("search")
       .value
-      .toLowerCase();
+      .toLowerCase()
+      .trim();
 
 
   const filtered =
     allServers.filter(server =>
-      server.name.toLowerCase().includes(query) ||
-      server.address.toLowerCase().includes(query)
+
+      String(server.name || "")
+        .toLowerCase()
+        .includes(query)
+
+      ||
+
+      String(server.address || "")
+        .toLowerCase()
+        .includes(query)
+
     );
 
 
@@ -779,14 +924,18 @@ function filterServers() {
   if (!filtered.length) {
 
     box.innerHTML =
-      '<div class="empty">სერვერი ვერ მოიძებნა.</div>';
+      '<div class="empty">' +
+      'სერვერი ვერ მოიძებნა.' +
+      '</div>';
 
     return;
   }
 
 
   box.innerHTML =
-    filtered.map(serverCard).join("");
+    filtered
+      .map(serverCard)
+      .join("");
 }
 
 
@@ -799,11 +948,14 @@ function toggleFavorite(id) {
   if (favorites.includes(id)) {
 
     favorites =
-      favorites.filter(x => x !== id);
+      favorites.filter(
+        x => x !== id
+      );
 
   } else {
 
     favorites.push(id);
+
   }
 
 
@@ -830,9 +982,8 @@ function connectServer(address) {
   );
 
   /*
-    შემდეგ ეტაპზე აქ დავამატებთ
-    Android SA-MP Launcher-ის
-    რეალურ Connect ინტეგრაციას.
+    რეალური Android SA-MP Connect
+    შემდეგ ეტაპზე დაემატება.
   */
 
 }
@@ -845,31 +996,72 @@ function connectServer(address) {
 async function adminLogin() {
 
   const email =
-    document.getElementById("adminEmail").value.trim();
+    document
+      .getElementById("adminEmail")
+      .value
+      .trim()
+      .toLowerCase();
+
 
   const password =
-    document.getElementById("adminPassword").value;
+    document
+      .getElementById("adminPassword")
+      .value;
 
 
   if (!email || !password) {
 
-    message("შეავსე Email და Password.");
+    message(
+      "შეავსე Email და Password."
+    );
+
+    return;
+  }
+
+
+  if (email !== ADMIN_EMAIL) {
+
+    message(
+      "ეს Admin ანგარიში არ არის."
+    );
 
     return;
   }
 
 
   const {
+    data,
     error
   } = await db.auth.signInWithPassword({
-    email,
-    password
+
+    email: email,
+
+    password: password
+
   });
 
 
   if (error) {
 
-    message("შესვლა ვერ მოხერხდა: " + error.message);
+    console.error(
+      "LOGIN ERROR:",
+      error
+    );
+
+    message(
+      "შესვლა ვერ მოხერხდა: " +
+      error.message
+    );
+
+    return;
+  }
+
+
+  if (!data || !data.user) {
+
+    message(
+      "მომხმარებელი ვერ მოიძებნა."
+    );
 
     return;
   }
@@ -886,39 +1078,42 @@ async function adminLogin() {
 async function checkAdmin() {
 
   const {
-    data: {
-      user
-    }
+    data,
+    error: userError
   } = await db.auth.getUser();
 
 
-  if (!user) {
+  const user =
+    data?.user;
 
-    document.getElementById("loginBox").style.display = "block";
 
-    document.getElementById("adminPanel").style.display = "none";
+  if (userError || !user) {
+
+    console.error(
+      "USER ERROR:",
+      userError
+    );
+
+    showLogin();
+
+    message(
+      "სესია ვერ მოიძებნა. თავიდან შედი."
+    );
 
     return;
   }
 
 
-  const {
-    data: profile,
-    error
-  } = await db
-    .from("profiles")
-    .select("is_admin,email")
-    .eq("id", user.id)
-    .single();
+  /*
+    მთავარი შემოწმება:
+    ეს არის შენი ახალი Supabase User ID.
+  */
 
-
-  if (
-    error ||
-    !profile ||
-    profile.is_admin !== true
-  ) {
+  if (user.id !== ADMIN_USER_ID) {
 
     await db.auth.signOut();
+
+    showLogin();
 
     message(
       "ამ ანგარიშს Admin წვდომა არ აქვს."
@@ -928,9 +1123,86 @@ async function checkAdmin() {
   }
 
 
-  document.getElementById("loginBox").style.display = "none";
+  /*
+    დამატებითი შემოწმება profiles ცხრილში.
+  */
 
-  document.getElementById("adminPanel").style.display = "block";
+  const {
+    data: profile,
+    error: profileError
+  } = await db
+    .from("profiles")
+    .select("id,email,is_admin")
+    .eq("id", ADMIN_USER_ID)
+    .maybeSingle();
+
+
+  if (profileError) {
+
+    console.error(
+      "PROFILE ERROR:",
+      profileError
+    );
+
+    /*
+      თუ profiles-ის SELECT policy პრობლემურია,
+      ID მაინც სწორია.
+    */
+
+    document.getElementById("loginBox").style.display =
+      "none";
+
+    document.getElementById("adminPanel").style.display =
+      "block";
+
+    message(
+      "Admin-ში შესვლა წარმატებულია ✅"
+    );
+
+    loadAdminServers();
+
+    return;
+  }
+
+
+  if (!profile) {
+
+    showLogin();
+
+    message(
+      "Admin პროფილი ვერ მოიძებნა."
+    );
+
+    return;
+  }
+
+
+  if (profile.is_admin !== true) {
+
+    showLogin();
+
+    message(
+      "Supabase-ში is_admin უნდა იყოს true."
+    );
+
+    return;
+  }
+
+
+  /*
+    ყველაფერი სწორია.
+  */
+
+  document.getElementById("loginBox").style.display =
+    "none";
+
+  document.getElementById("adminPanel").style.display =
+    "block";
+
+
+  message(
+    "Admin Panel-ში შესვლა წარმატებულია ✅"
+  );
 
 
   loadAdminServers();
@@ -945,7 +1217,11 @@ async function adminLogout() {
 
   await db.auth.signOut();
 
-  message("გამოხვედი Admin Panel-იდან.");
+  showLogin();
+
+  message(
+    "გამოხვედი Admin Panel-იდან."
+  );
 
   showHome();
 }
@@ -958,21 +1234,60 @@ async function adminLogout() {
 async function addServer() {
 
   const name =
-    document.getElementById("newName").value.trim();
+    document
+      .getElementById("newName")
+      .value
+      .trim();
+
 
   const address =
-    document.getElementById("newAddress").value.trim();
+    document
+      .getElementById("newAddress")
+      .value
+      .trim();
+
 
   const description =
-    document.getElementById("newDescription").value.trim();
+    document
+      .getElementById("newDescription")
+      .value
+      .trim();
+
 
   const featured =
-    document.getElementById("newFeatured").checked;
+    document
+      .getElementById("newFeatured")
+      .checked;
 
 
   if (!name || !address) {
 
-    message("სახელი და IP:PORT აუცილებელია.");
+    message(
+      "სახელი და IP:PORT აუცილებელია."
+    );
+
+    return;
+  }
+
+
+  /*
+    დამატებითი უსაფრთხოება:
+    ვამოწმებთ, რომ Admin სესია არსებობს.
+  */
+
+  const {
+    data: sessionData
+  } = await db.auth.getSession();
+
+
+  if (
+    !sessionData.session ||
+    sessionData.session.user.id !== ADMIN_USER_ID
+  ) {
+
+    message(
+      "Admin ავტორიზაცია საჭიროა."
+    );
 
     return;
   }
@@ -983,38 +1298,57 @@ async function addServer() {
   } = await db
     .from("servers")
     .insert({
+
       name: name,
+
       address: address,
+
       description: description,
+
       is_featured: featured,
+
       is_active: true
+
     });
 
 
   if (error) {
 
+    console.error(
+      "ADD SERVER ERROR:",
+      error
+    );
+
     message(
-      "შეცდომა: " + error.message
+      "შეცდომა: " +
+      error.message
     );
 
     return;
   }
 
 
-  document.getElementById("newName").value = "";
+  document.getElementById("newName").value =
+    "";
 
-  document.getElementById("newAddress").value = "";
+  document.getElementById("newAddress").value =
+    "";
 
-  document.getElementById("newDescription").value = "";
+  document.getElementById("newDescription").value =
+    "";
 
-  document.getElementById("newFeatured").checked = false;
+  document.getElementById("newFeatured").checked =
+    false;
 
 
-  message("სერვერი დაემატა ✅");
+  message(
+    "სერვერი დაემატა ✅"
+  );
 
-  loadAdminServers();
 
-  loadServers();
+  await loadAdminServers();
+
+  await loadServers();
 }
 
 
@@ -1025,7 +1359,9 @@ async function addServer() {
 async function loadAdminServers() {
 
   const box =
-    document.getElementById("adminServers");
+    document.getElementById(
+      "adminServers"
+    );
 
 
   const {
@@ -1041,100 +1377,157 @@ async function loadAdminServers() {
 
   if (error) {
 
+    console.error(
+      "ADMIN SERVER ERROR:",
+      error
+    );
+
     box.innerHTML =
-      "შეცდომა: " + error.message;
+      '<div class="empty">' +
+      'შეცდომა: ' +
+      escapeHTML(error.message) +
+      '</div>';
 
     return;
   }
 
 
-  if (!data.length) {
+  if (!data || !data.length) {
 
     box.innerHTML =
-      '<div class="empty">სერვერები არ არის.</div>';
+      '<div class="empty">' +
+      'სერვერები არ არის.' +
+      '</div>';
 
     return;
   }
 
 
   box.innerHTML =
-    data.map(server => `
+    data
+      .map(server => `
 
-      <div class="admin-server">
+        <div class="admin-server">
 
-        <div>
+          <div>
 
-          <b>
-            ${escapeHTML(server.name)}
-          </b>
+            <b>
+              ${escapeHTML(server.name)}
+            </b>
 
-          <div style="color:#888;margin-top:5px">
-            ${escapeHTML(server.address)}
+            <div style="
+              color:#888;
+              margin-top:5px;
+            ">
+              ${escapeHTML(server.address)}
+            </div>
+
+            <div style="
+              color:${
+                server.is_active
+                  ? "#62dc75"
+                  : "#d85b5b"
+              };
+              margin-top:5px;
+              font-size:13px;
+            ">
+
+              ${
+                server.is_active
+                  ? "● აქტიური"
+                  : "● გამორთული"
+              }
+
+            </div>
+
           </div>
 
-          <div style="
-            color:${server.is_active ? "#62dc75" : "#d85b5b"};
-            margin-top:5px;
-            font-size:13px;
-          ">
-            ${server.is_active ? "● აქტიური" : "● გამორთული"}
+
+          <div class="admin-actions">
+
+            <button
+              class="small green"
+              onclick="
+                toggleServer(
+                  '${server.id}',
+                  ${!server.is_active}
+                )
+              "
+            >
+              ${
+                server.is_active
+                  ? "გამორთვა"
+                  : "ჩართვა"
+              }
+            </button>
+
+
+            <button
+              class="small red"
+              onclick="
+                deleteServer('${server.id}')
+              "
+            >
+              წაშლა
+            </button>
+
           </div>
 
         </div>
 
-
-        <div class="admin-actions">
-
-          <button
-            class="small green"
-            onclick="
-              toggleServer(
-                '${server.id}',
-                ${!server.is_active}
-              )
-            "
-          >
-            ${server.is_active ? "გამორთვა" : "ჩართვა"}
-          </button>
-
-
-          <button
-            class="small red"
-            onclick="
-              deleteServer('${server.id}')
-            "
-          >
-            წაშლა
-          </button>
-
-        </div>
-
-      </div>
-
-    `).join("");
+      `)
+      .join("");
 }
 
 
 /* =====================================
-   TOGGLE
+   TOGGLE SERVER
 ===================================== */
 
-async function toggleServer(id, active) {
+async function toggleServer(
+  id,
+  active
+) {
+
+  const {
+    data: sessionData
+  } = await db.auth.getSession();
+
+
+  if (
+    !sessionData.session ||
+    sessionData.session.user.id !== ADMIN_USER_ID
+  ) {
+
+    message(
+      "Admin ავტორიზაცია საჭიროა."
+    );
+
+    return;
+  }
+
 
   const {
     error
   } = await db
     .from("servers")
     .update({
+
       is_active: active,
-      updated_at: new Date().toISOString()
+
+      updated_at:
+        new Date().toISOString()
+
     })
     .eq("id", id);
 
 
   if (error) {
 
-    message(error.message);
+    message(
+      "შეცდომა: " +
+      error.message
+    );
 
     return;
   }
@@ -1147,23 +1540,42 @@ async function toggleServer(id, active) {
   );
 
 
-  loadAdminServers();
+  await loadAdminServers();
 
-  loadServers();
+  await loadServers();
 }
 
 
 /* =====================================
-   DELETE
+   DELETE SERVER
 ===================================== */
 
 async function deleteServer(id) {
+
+  const {
+    data: sessionData
+  } = await db.auth.getSession();
+
+
+  if (
+    !sessionData.session ||
+    sessionData.session.user.id !== ADMIN_USER_ID
+  ) {
+
+    message(
+      "Admin ავტორიზაცია საჭიროა."
+    );
+
+    return;
+  }
+
 
   if (
     !confirm(
       "ნამდვილად გინდა ამ სერვერის წაშლა?"
     )
   ) {
+
     return;
   }
 
@@ -1178,17 +1590,23 @@ async function deleteServer(id) {
 
   if (error) {
 
-    message(error.message);
+    message(
+      "შეცდომა: " +
+      error.message
+    );
 
     return;
   }
 
 
-  message("სერვერი წაიშალა.");
+  message(
+    "სერვერი წაიშალა ✅"
+  );
 
-  loadAdminServers();
 
-  loadServers();
+  await loadAdminServers();
+
+  await loadServers();
 }
 
 
@@ -1198,12 +1616,22 @@ async function deleteServer(id) {
 
 function escapeHTML(value) {
 
-  return String(value)
+  return String(value ?? "")
     .replaceAll("&", "&amp;")
     .replaceAll("<", "&lt;")
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+
+
+function escapeJS(value) {
+
+  return String(value ?? "")
+    .replaceAll("\\", "\\\\")
+    .replaceAll("'", "\\'")
+    .replaceAll("\n", "\\n")
+    .replaceAll("\r", "\\r");
 }
 
 
@@ -1213,7 +1641,31 @@ function escapeHTML(value) {
 
 loadServers();
 
+
+/*
+  თუ Supabase სესია უკვე არსებობს,
+  გვერდის გახსნისას Admin სტატუსიც
+  ავტომატურად შემოწმდება.
+*/
+
+db.auth.getSession().then(
+  async ({ data }) => {
+
+    if (
+      data.session &&
+      data.session.user.id === ADMIN_USER_ID
+    ) {
+
+      console.log(
+        "Admin session detected."
+      );
+
+    }
+
+  }
+);
+
 </script>
 
 </body>
-      </html>
+  </html>
