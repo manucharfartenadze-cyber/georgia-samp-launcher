@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
@@ -25,8 +25,6 @@ jobs:
       - name: Extract Android project
         run: |
           unzip -q Georgia-SA-MP-Launcher-Android-v3.zip -d extracted
-          echo "Files extracted:"
-          find extracted -maxdepth 3 -type f | head -50
 
       - name: Build APK
         working-directory: extracted/Georgia-SA-MP-Launcher/android
