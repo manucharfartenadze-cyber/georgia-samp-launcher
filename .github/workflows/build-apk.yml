@@ -24,7 +24,7 @@ jobs:
 
       - name: Extract Android project
         run: |
-          unzip -q Georgia-SA-MP-Launcher-Android-v3.zip -d extracted
+          unzip -q Georgia-SA-MP-Launcher-Android-v4.zip -d extracted
 
       - name: Build APK
         working-directory: extracted/Georgia-SA-MP-Launcher/android
